@@ -71,6 +71,10 @@ namespace functions {
 std::vector<II_t_rt>
 makeConnected(pgrouting::UndirectedGraph &graph) {
     std::vector<II_t_rt> results;
+    size_t num_v = boost::num_vertices(graph.graph);
+    if (num_v > 1) {
+        results.reserve(num_v - 1);
+    }
     UpdateNewEdges visitor(results);
 
     /* map which store the indices with their nodes. */

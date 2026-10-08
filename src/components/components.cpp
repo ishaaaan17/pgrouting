@@ -60,7 +60,15 @@ connectedComponents(pgrouting::UndirectedGraph &graph) {
     }
 
   // get the results
+  std::vector<size_t> comp_sizes(num_comps, 0);
+  for (auto vd : boost::make_iterator_range(vertices(graph.graph))) {
+    ++comp_sizes[components[vd]];
+  }
+
   std::vector<std::vector<int64_t>> results(num_comps);
+  for (size_t i = 0; i < num_comps; ++i) {
+    results[i].reserve(comp_sizes[i]);
+  }
   for (auto vd : boost::make_iterator_range(vertices(graph.graph))) {
     results[components[vd]].push_back(graph[vd].id);
   }
@@ -88,7 +96,15 @@ strongComponents(pgrouting::DirectedGraph &graph) {
   }
 
 
+  std::vector<size_t> comp_sizes(num_comps, 0);
+  for (auto vd : boost::make_iterator_range(vertices(graph.graph))) {
+    ++comp_sizes[components[vd]];
+  }
+
   std::vector<std::vector<int64_t>> results(num_comps);
+  for (size_t i = 0; i < num_comps; ++i) {
+    results[i].reserve(comp_sizes[i]);
+  }
   for (auto vd : boost::make_iterator_range(vertices(graph.graph))) {
     results[components[vd]].push_back(graph[vd].id);
   }
@@ -114,7 +130,15 @@ biconnectedComponents(pgrouting::UndirectedGraph &graph) {
     throw;
   }
 
+  std::vector<size_t> comp_sizes(num_comps, 0);
+  for (auto ed : boost::make_iterator_range(edges(graph.graph))) {
+    ++comp_sizes[bimap[ed]];
+  }
+
   std::vector<std::vector<int64_t>> results(num_comps);
+  for (size_t i = 0; i < num_comps; ++i) {
+    results[i].reserve(comp_sizes[i]);
+  }
   for (auto ed : boost::make_iterator_range(edges(graph.graph))) {
     results[bimap[ed]].push_back(graph[ed].id);
   }
@@ -183,6 +207,7 @@ Identifiers<int64_t> bridges(pgrouting::UndirectedGraph &graph) {
         throw;
     }
 
+    art_points.reserve(art_points.size() + boost::num_vertices(graph.graph));
     for (auto v : boost::make_iterator_range(vertices(graph.graph))) {
         if (boost::out_degree(v, graph.graph) == 1) {
             art_points.push_back(v);
